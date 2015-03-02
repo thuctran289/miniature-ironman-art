@@ -209,9 +209,9 @@ def generate_art(filename, x_size=650, y_size=650):
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = build_random_function(1, 9)
-    green_function = build_random_function(1, 9)
-    blue_function = build_random_function(1, 9)
+    red_function = build_random_function(7, 9)
+    green_function = build_random_function(7, 9)
+    blue_function = build_random_function(7, 9)
     print 'red function: ' + str(red_function)
     print 'green function: ' + str(green_function)
     print 'blue function: ' + str(blue_function)
@@ -220,8 +220,15 @@ def generate_art(filename, x_size=650, y_size=650):
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
     pixels = im.load()
-    layer = generate_layer(400,300,x_size, y_size)
-    layer2 = generate_layer(200,300, x_size,y_size)
+    xsize = x_size
+    ysize = y_size
+    layer_x = random.choice(range(0,x_size))
+    layer_y = random.choice(range(0,y_size))
+    layer2_x = random.choice(range(0,x_size))
+    layer2_y = random.choice(range(0,ysize))
+
+    layer = generate_layer(layer_x,layer_y,x_size, y_size)
+    layer2 = generate_layer(layer2_x,layer2_y, x_size,y_size)
     for i in range(x_size):
         for j in range(y_size):
             x = remap_interval(i, 0, x_size, -1, 1)
@@ -249,16 +256,16 @@ if __name__ == '__main__':
  #   import doctest
  #   doctest.testmod()
 
-    z = 0
+    z = 35
     nameNum = range(z, z+5)
     stq = 'artIter' + str(nameNum[0]) + '.png'
-    str2 = 'art' + str(nameNum[1]) + '.png'
-    str3 = 'art' + str(nameNum[2]) + '.png'
-    str4 = 'art' + str(nameNum[3]) + '.png'
-    str5 = 'art' + str(nameNum[4]) + '.png'
+    str2 = 'artIter' + str(nameNum[1]) + '.png'
+    str3 = 'artIter' + str(nameNum[2]) + '.png'
+    str4 = 'artIter' + str(nameNum[3]) + '.png'
+    str5 = 'artIter' + str(nameNum[4]) + '.png'
 
     generate_art(stq, 600, 600)
-    #generate_art(str2, 600, 600)
-    #generate_art(str3, 600, 600)
-    #generate_art(str4, 600, 600)
-    #generate_art(str5, 600, 600)
+    generate_art(str2, 600, 600)
+    generate_art(str3, 600, 600)
+    generate_art(str4, 600, 600)
+    generate_art(str5, 600, 600)
