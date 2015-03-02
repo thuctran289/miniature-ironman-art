@@ -22,7 +22,7 @@ def build_random_function(min_depth, max_depth):
 
 def make_function(depth):
     if depth == 1:
-        return random.choice(['x', 'y','r','g','b'])
+        return random.choice(['x','y','x','y','r','g','b','r1','g1','b1'])
     modifiers = ['prod', 'avg', 'cos_pi', 'sin_pi', 'tan_pi', 'abs']
     modifier = random.choice(modifiers)
     if modifier == "prod":
@@ -42,7 +42,9 @@ def make_function(depth):
     elif modifier == "abs":
         return ["abs", make_function(depth-1)]
 
-def evaluate_random_function(f, x, y,r,g,b):
+def evaluate_random_function(f, x, y,r,g,b,r1,g1,b1):
+    print f
+    print x,y,r,g,b,r1,g1,b1
     """ Evaluate the random function f with inputs x,y
         Representation of the function f is defined in the assignment writeup
 
@@ -82,23 +84,30 @@ def evaluate_random_function(f, x, y,r,g,b):
             return float(g)
         elif f[0] == 'b':
             return float(b)
+        elif f[0] == 'r1':
+            return float(r1)
+        elif f[0] == 'g1':
+            return float(g1)
+        elif f[0] == 'b1':
+            return float(b1)
+
     else:
         if f[0] == 'prod':
-            return float(evaluate_random_function(f[1], x, y, r, g, b))*evaluate_random_function(f[2], x, y, r, g, b)
+            return float(evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1))*evaluate_random_function(f[2], x, y, r, g, b, r1, g1,b1)
         elif f[0] == 'avg':
-            return (evaluate_random_function(f[1], x, y, r, g, b)+evaluate_random_function(f[2], x, y, r, g, b))/2.0
+            return (evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1)+evaluate_random_function(f[2], x, y, r, g, b, r1, g1,b1))/2.0
         elif f[0] == 'sqr':
-            return float(evaluate_random_function(f[1], x, y, r, g, b))**2.0
+            return float(evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1))**2.0
         elif f[0] == 'half':
-            return evaluate_random_function(f[1], x, y, r, g, b)*.5
+            return evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1)*.5
         elif f[0] == 'cos_pi':
-            return math.cos(math.pi*evaluate_random_function(f[1], x, y, r, g, b))
+            return math.cos(math.pi*evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1))
         elif f[0] == 'sin_pi':
-            return math.sin(math.pi*evaluate_random_function(f[1], x, y, r, g, b))
+            return math.sin(math.pi*evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1))
         elif f[0] == 'tan_pi':
-            return math.tan(math.pi*evaluate_random_function(f[1], x, y, r, g, b))
+            return math.tan(math.pi*evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1))
         elif f[0] == 'abs':
-            return abs(evaluate_random_function(f[1], x, y, r, g, b))
+            return abs(evaluate_random_function(f[1], x, y, r, g, b, r1, g1,b1))
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
     """ Given an input value in the interval [input_interval_start,
@@ -150,6 +159,10 @@ def color_map(val):
     """
     # NOTE: This relies on remap_interval, which you must provide
     color_code = remap_interval(val, -1, 1, 0, 255)
+    if color_code<0:
+        return 0
+    elif color_code>255: 
+        return 255
     return int(color_code)
 
 def test_image(filename, x_size=350, y_size=350):
@@ -171,7 +184,27 @@ def test_image(filename, x_size=350, y_size=350):
 
     im.save(filename)
 
-def generate_art(filename, x_size=350, y_size=350):
+def generate_layer(x,y, x_size = 400, y_size = 400):
+    if x<.5 * x_size:
+        x_max_diff = x_size -x
+    else:
+        x_max_diff = x
+    if y<.5 * y_size:
+        y_max_diff = y_size -y
+    else:
+        y_max_diff = y
+    layer = []
+    for i in range(0, x_size):
+        new = []
+        for j in range(0, y_size):
+            new.append( math.sqrt((x-i)**2 + (y-j)**2))
+        layer.append(new)
+
+    return layer
+
+
+
+def generate_art(filename, x_size=650, y_size=650):
     """ Generate computational art and save as an image file.
 
         filename: string filename for image (should be .png)
@@ -184,30 +217,43 @@ def generate_art(filename, x_size=350, y_size=350):
     print 'red function: ' + str(red_function)
     print 'green function: ' + str(green_function)
     print 'blue function: ' + str(blue_function)
-
+    seed_im = Image.open("art2.png")
+    seed_im = seed_im.convert('RGB')
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
     pixels = im.load()
+    layer = generate_layer(300,300,x_size, y_size)
+    layer2 = generate_layer(150,150,x_size,y_size)
     for i in range(x_size):
         for j in range(y_size):
             x = remap_interval(i, 0, x_size, -1, 1)
             y = remap_interval(j, 0, y_size, -1, 1)
-            r = 1
-            g = 1
-            b = 5
+            # r,g,b = seed_im.getpixel((i,j))
+            
+            r = remap_interval( layer[i][j], 0,255, -1,1)
+            g = remap_interval( layer[i][j], 0,255, -1,1)
+            b = remap_interval( layer[i][j], 0,255, -1,1)
+            
+            r1 = remap_interval( layer2[i][j], 0,255, -1,1)
+            g1 = remap_interval( layer2[i][j], 0,255, -1,1)
+            b1 = remap_interval( layer2[i][j], 0,255, -1,1)
+            
+
             pixels[i, j] = (
-                color_map(evaluate_random_function(red_function, x, y, r, g, b)),
-                color_map(evaluate_random_function(green_function, x, y, r, g, b)),
-                color_map(evaluate_random_function(blue_function, x, y, r, g, b))
+                color_map(evaluate_random_function(red_function, x, y, r, g, b, r1, g1,b1)),
+                color_map(evaluate_random_function(green_function, x, y, r, g, b, r1, g1,b1)),
+                color_map(evaluate_random_function(blue_function, x, y, r, g, b, r1, g1,b1))
                 )
 
     im.save(filename)
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
 
-    z = 0
+
+if __name__ == '__main__':
+ #   import doctest
+ #   doctest.testmod()
+
+    z = 3
     nameNum = range(z, z+5)
     str1 = 'art' + str(nameNum[0]) + '.png'
     str2 = 'art' + str(nameNum[1]) + '.png'
@@ -215,10 +261,8 @@ if __name__ == '__main__':
     str4 = 'art' + str(nameNum[3]) + '.png'
     str5 = 'art' + str(nameNum[4]) + '.png'
 
-    # generate_art(str1, 400, 400)
+    generate_art(str1, 480, 360)
     # generate_art(str2, 400, 400)
     # generate_art(str3, 400, 400)
     # generate_art(str4, 400, 400)
     # generate_art(str5, 400, 400)
-
-    print color_map(-5)
