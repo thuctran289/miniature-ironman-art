@@ -22,7 +22,7 @@ def build_random_function(min_depth, max_depth):
 
 def make_function(depth):
     if depth == 1:
-        return random.choice(['x', 'y'])
+        return random.choice(['x', 'y','r','g','b'])
     modifiers = ['prod', 'avg', 'cos_pi', 'sin_pi', 'tan_pi', 'abs']
     modifier = random.choice(modifiers)
     if modifier == "prod":
@@ -42,7 +42,7 @@ def make_function(depth):
     elif modifier == "abs":
         return ["abs", make_function(depth-1)]
 
-def evaluate_random_function(f, x, y):
+def evaluate_random_function(f, x, y,r,g,b):
     """ Evaluate the random function f with inputs x,y
         Representation of the function f is defined in the assignment writeup
 
@@ -76,23 +76,29 @@ def evaluate_random_function(f, x, y):
             return float(x)
         elif f[0] == 'y':
             return float(y)
+        elif f[0] == 'r':
+            return float(r)
+        elif f[0] == 'g':
+            return float(g)
+        elif f[0] == 'b':
+            return float(b)
     else:
         if f[0] == 'prod':
-            return float(evaluate_random_function(f[1], x, y))*evaluate_random_function(f[2], x, y)
+            return float(evaluate_random_function(f[1], x, y, r, g, b))*evaluate_random_function(f[2], x, y, r, g, b)
         elif f[0] == 'avg':
-            return (evaluate_random_function(f[1], x, y)+evaluate_random_function(f[2], x, y))/2.0
+            return (evaluate_random_function(f[1], x, y, r, g, b)+evaluate_random_function(f[2], x, y, r, g, b))/2.0
         elif f[0] == 'sqr':
-            return float(evaluate_random_function(f[1], x, y))**2.0
+            return float(evaluate_random_function(f[1], x, y, r, g, b))**2.0
         elif f[0] == 'half':
-            return evaluate_random_function(f[1], x, y)*.5
+            return evaluate_random_function(f[1], x, y, r, g, b)*.5
         elif f[0] == 'cos_pi':
-            return math.cos(math.pi*evaluate_random_function(f[1], x, y))
+            return math.cos(math.pi*evaluate_random_function(f[1], x, y, r, g, b))
         elif f[0] == 'sin_pi':
-            return math.sin(math.pi*evaluate_random_function(f[1], x, y))
+            return math.sin(math.pi*evaluate_random_function(f[1], x, y, r, g, b))
         elif f[0] == 'tan_pi':
-            return math.tan(math.pi*evaluate_random_function(f[1], x, y))
+            return math.tan(math.pi*evaluate_random_function(f[1], x, y, r, g, b))
         elif f[0] == 'abs':
-            return abs(evaluate_random_function(f[1], x, y))
+            return abs(evaluate_random_function(f[1], x, y, r, g, b))
 
 def remap_interval(val, input_interval_start, input_interval_end, output_interval_start, output_interval_end):
     """ Given an input value in the interval [input_interval_start,
@@ -186,10 +192,13 @@ def generate_art(filename, x_size=350, y_size=350):
         for j in range(y_size):
             x = remap_interval(i, 0, x_size, -1, 1)
             y = remap_interval(j, 0, y_size, -1, 1)
+            r = 1
+            g = 1
+            b = 5
             pixels[i, j] = (
-                color_map(evaluate_random_function(red_function, x, y)),
-                color_map(evaluate_random_function(green_function, x, y)),
-                color_map(evaluate_random_function(blue_function, x, y))
+                color_map(evaluate_random_function(red_function, x, y, r, g, b)),
+                color_map(evaluate_random_function(green_function, x, y, r, g, b)),
+                color_map(evaluate_random_function(blue_function, x, y, r, g, b))
                 )
 
     im.save(filename)
@@ -198,7 +207,7 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    z = 49
+    z = 0
     nameNum = range(z, z+5)
     str1 = 'art' + str(nameNum[0]) + '.png'
     str2 = 'art' + str(nameNum[1]) + '.png'
@@ -206,8 +215,10 @@ if __name__ == '__main__':
     str4 = 'art' + str(nameNum[3]) + '.png'
     str5 = 'art' + str(nameNum[4]) + '.png'
 
-    generate_art(str1, 1920, 1080)
-    # generate_art(str2, 1920, 1080)
-    # generate_art(str3, 1920, 1080)
-    # generate_art(str4, 1920, 1080)
-    # generate_art(str5, 1920, 1080)
+    # generate_art(str1, 400, 400)
+    # generate_art(str2, 400, 400)
+    # generate_art(str3, 400, 400)
+    # generate_art(str4, 400, 400)
+    # generate_art(str5, 400, 400)
+
+    print color_map(-5)
