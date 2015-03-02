@@ -175,7 +175,7 @@ def test_image(filename, x_size=350, y_size=350):
 
     im.save(filename)
 
-def generate_layer(x,y, x_size = 400, y_size = 400):
+def generate_layer(x,y, x_size = 650, y_size = 650):
     if x<.5 * x_size:
         x_max_diff = x_size -x
     else:
@@ -202,9 +202,9 @@ def generate_art(filename, x_size=650, y_size=650):
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = build_random_function(7, 9)
-    green_function = build_random_function(7, 9)
-    blue_function = build_random_function(7, 9)
+    red_function = build_random_function(1, 9)
+    green_function = build_random_function(1, 9)
+    blue_function = build_random_function(1, 9)
     print 'red function: ' + str(red_function)
     print 'green function: ' + str(green_function)
     print 'blue function: ' + str(blue_function)
@@ -213,7 +213,7 @@ def generate_art(filename, x_size=650, y_size=650):
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
     pixels = im.load()
-    layer = generate_layer(300,300,x_size, y_size)
+    layer = generate_layer(200,500,x_size, y_size)
     for i in range(x_size):
         for j in range(y_size):
             x = remap_interval(i, 0, x_size, -1, 1)
@@ -238,7 +238,7 @@ if __name__ == '__main__':
  #   import doctest
  #   doctest.testmod()
 
-    z = 6
+    z = 30
     nameNum = range(z, z+5)
     str1 = 'art' + str(nameNum[0]) + '.png'
     str2 = 'art' + str(nameNum[1]) + '.png'
@@ -246,8 +246,8 @@ if __name__ == '__main__':
     str4 = 'art' + str(nameNum[3]) + '.png'
     str5 = 'art' + str(nameNum[4]) + '.png'
 
-    generate_art(str1, 480, 360)
-    # generate_art(str2, 400, 400)
-    # generate_art(str3, 400, 400)
-    # generate_art(str4, 400, 400)
-    # generate_art(str5, 400, 400)
+    generate_art(str1, 600, 600)
+    generate_art(str2, 600, 600)
+    generate_art(str3, 600, 600)
+    generate_art(str4, 600, 600)
+    generate_art(str5, 600, 600)
