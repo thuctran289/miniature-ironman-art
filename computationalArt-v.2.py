@@ -2,6 +2,7 @@
 
 import random
 import math
+import time
 from PIL import Image
 
 def build_random_function(min_depth, max_depth):
@@ -209,9 +210,9 @@ def generate_art(filename, x_size=650, y_size=650):
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = build_random_function(7, 9)
-    green_function = build_random_function(7, 9)
-    blue_function = build_random_function(7, 9)
+    red_function = build_random_function(1, 3)
+    green_function = build_random_function(1,3)
+    blue_function = build_random_function(1, 3)
     print 'red function: ' + str(red_function)
     print 'green function: ' + str(green_function)
     print 'blue function: ' + str(blue_function)
@@ -229,6 +230,7 @@ def generate_art(filename, x_size=650, y_size=650):
 
     layer = generate_layer(layer_x,layer_y,x_size, y_size)
     layer2 = generate_layer(layer2_x,layer2_y, x_size,y_size)
+    start = time.time()
     for i in range(x_size):
         for j in range(y_size):
             x = remap_interval(i, 0, x_size, -1, 1)
@@ -242,13 +244,15 @@ def generate_art(filename, x_size=650, y_size=650):
             q = remap_interval( layer2[i][j], 0,255, -1,1)
             e = remap_interval( layer2[i][j], 0,255, -1,1)
             w = remap_interval( layer2[i][j], 0,255, -1,1)
-            pixels[i, j] = (
-                color_map(evaluate_random_function(red_function, x, y, r, g, b,q,e,w)),
-                color_map(evaluate_random_function(green_function, x, y, r, g, b,q,e,w)),
-                color_map(evaluate_random_function(blue_function, x, y, r, g, b,q,e,w))
-                )
-
-    im.save(filename)
+            #pixels[i, j] = (
+            #    color_map(evaluate_random_function(red_function, x, y, r, g, b,q,e,w)),
+            #    color_map(evaluate_random_function(green_function, x, y, r, g, b,q,e,w)),
+            #    color_map(evaluate_random_function(blue_function, x, y, r, g, b,q,e,w))
+            #    )
+    end = time.time()
+    print end - start
+    print 'seconds'
+    #im.save(filename)
 
 
 
