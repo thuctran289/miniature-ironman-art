@@ -3,6 +3,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def filter_by_count(img, number_of_people):
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7b2f88e97144871475a0c3ca6eed192bab6b23c7
 	if (number_of_people ==0):
 		kernal = np.ones((80,80),np.float32)/6400
 	elif (number_of_people ==1):
@@ -21,4 +25,21 @@ def filter_by_count(img, number_of_people):
 	#plt.subplot(121),plt.imshow(img),plt.title('Original')
 	#plt.xticks([]), plt.yticks([])
 	#plt.subplot(122),plt.imshow(dst),plt.title('Averaging')
+<<<<<<< HEAD
 	#plt.xticks([]), plt.yticks([])
+=======
+	#plt.xticks([]), plt.yticks([])
+	
+def color_filter_by_count(img, number_of_people):
+	if number_of_people == 0 :
+		size_of_img = img.shape
+		return np.zeros((size_of_img),np.float32)
+	elif (number_of_people ==1):
+		return np.append(img[::,::,0],np.zeros((size_of_img[::,::,0:1]),np.float32))
+	elif (number_of_people ==2):
+		return np.append(img[::,::,0:1],np.zeros((size_of_img[::,::,0]),np.float32))
+	elif (number_of_people ==3):
+		return img
+	else:
+		return img
+>>>>>>> 7b2f88e97144871475a0c3ca6eed192bab6b23c7
