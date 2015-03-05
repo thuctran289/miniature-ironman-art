@@ -3,7 +3,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def filter_by_count(img, number_of_people):
-
 	if (number_of_people ==0):
 		kernal = np.ones((80,80),np.float32)/6400
 	elif (number_of_people ==1):
@@ -13,7 +12,7 @@ def filter_by_count(img, number_of_people):
 	elif (number_of_people ==3):
 		kernal = np.ones((10,10),np.float32)/100
 	elif (number_of_people ==4):
-		kernal1 = np.ones((5,5),np.float32)/25
+		kernal = np.ones((5,5),np.float32)/25
 	else:
 		return img
 	
@@ -37,4 +36,3 @@ def color_filter_by_count(img, number_of_people):
 		return img
 	else:
 		return img
-		
