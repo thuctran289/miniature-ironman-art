@@ -25,14 +25,16 @@ def filter_by_count(img, number_of_people):
 	#plt.xticks([]), plt.yticks([])
 	
 def color_filter_by_count(img, number_of_people):
+	size_of_img = img.shape
 	if number_of_people == 0 :
 		size_of_img = img.shape
 		return np.zeros((size_of_img),np.float32)
 	elif (number_of_people ==1):
-		return np.append(img[::,::,0],np.zeros((size_of_img[::,::,0:1]),np.float32))
+		return np.append(img[::,::,0],np.zeros((size_of_img[0],size_of_img[1],2),np.float32))
 	elif (number_of_people ==2):
-		return np.append(img[::,::,0:1],np.zeros((size_of_img[::,::,0]),np.float32))
+		return np.append(img[::,::,0:1],np.zeros((size_of_img[0],size_of_img[1],1),np.float32))
 	elif (number_of_people ==3):
 		return img
 	else:
 		return img
+		
