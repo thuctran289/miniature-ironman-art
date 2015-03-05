@@ -28,16 +28,17 @@ def color_filter_by_count(img, number_of_people):
 	if number_of_people == 0 :
 		return np.zeros((size_of_img),np.float32)
 	elif (number_of_people ==1):
-<<<<<<< HEAD
-		return np.append(img[::,::,0],np.zeros(size_of_img[0],size_of_img[1],1),np.float32))
-	elif (number_of_people ==2):
-		return np.append(img[::,::,0:1],np.zeros(size_of_img[0],size_of_img[1],2),np.float32))
-=======
-		return np.append(img[::,::,0],np.zeros((size_of_img[0],size_of_img[1],2),np.float32))
-	elif (number_of_people ==2):
-		return np.append(img[::,::,0:1],np.zeros((size_of_img[0],size_of_img[1],1),np.float32))
->>>>>>> 41bc5c6f5aef3d84ae76876c74923d91cc3aa521
-	elif (number_of_people ==3):
+		for x in range(0,size_of_img[0]):
+			for y in range(0,size_of_img[1]):
+				img[x,y,0] = 0
+				img[x,y,1] = 0
+
+		return img
+	elif (number_of_people==2):
+		for x in range(0,size_of_img[0]):
+			for y in range(0,size_of_img[1]):
+				img[x,y,0] = 0
+
 		return img
 	else:
 		return img
