@@ -16,11 +16,13 @@ def num_faces():
 
 	while(True):
 		ret, frame = cap.read()
-		frame = frame[1:500,1:500,::]
+		# cap.set(3, 480)
+		# cap.set(4, 360)
+		# frame = frame[1:500,1:500,::]
 		#Create an array of the detected faces
-		faces = face_cascade.detectMultiScale(frame, scaleFactor=1.2, minSize=(20,20))
-		# res = filterModule.filter_by_count(frame, len(faces))
-		res = filterModule.color_filter_by_count(frame, len(faces))
+		#faces = face_cascade.detectMultiScale(frame, scaleFactor=1.2, minSize=(20,20))
+		#res = filterModule.filter_by_count(frame, len(faces))
+		# res = filterModule.color_filter_by_count(frame, len(faces))
 
 		# if len(faces) == 0:
 		# 	mask = cv2.inRange(frame, (0, 0, 0), (255, 150, 150))
@@ -32,7 +34,8 @@ def num_faces():
 		# 	res = frame
 
 		# Display the blurred/clear image
-		cv2.imshow('res', res)
+		# cv2.imshow('res', res)
+		cv2.imshow('frame', frame)
 		if cv2.waitKey(1) & 0xFF == 27:
 			break
 
