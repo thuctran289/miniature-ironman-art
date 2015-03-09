@@ -25,6 +25,7 @@ def filter_by_count(img, number_of_people):
 	
 def color_filter_by_count(img, number_of_people):
 	size_of_img = img.shape
+
 	if number_of_people == 0 :
 		return np.zeros((size_of_img),np.float32)
 	elif (number_of_people ==1):
@@ -32,13 +33,26 @@ def color_filter_by_count(img, number_of_people):
 			for y in range(0,size_of_img[1]):
 				img[x,y,0] = 0
 				img[x,y,1] = 0
-
 		return img
 	elif (number_of_people==2):
 		for x in range(0,size_of_img[0]):
 			for y in range(0,size_of_img[1]):
 				img[x,y,0] = 0
-
 		return img
 	else:
 		return img
+
+
+
+
+def test():
+	img = np.random.rand(400,400,3)
+	img1 = np.copy(img)
+	img1 = color_filter_by_count(img1, 0)
+	plt.subplot(121),plt.imshow(img),plt.title('Original')
+	plt.xticks([]), plt.yticks([])
+	plt.subplot(122),plt.imshow(img1),plt.title('Other')
+	plt.xticks([]), plt.yticks([])
+	plt.show()
+
+test()
