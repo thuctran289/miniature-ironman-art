@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import time
-from drawModule import Controls
 
 class Point():
     def __init__(self, x,y):
@@ -32,6 +31,7 @@ box = ColorBox(10, 430, 100, 100, 0, 0, 0)
 #Start cam stream
 cap = cv2.VideoCapture(0)
 
+#Positions list
 points = []
 
 while(1):
