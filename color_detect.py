@@ -1,9 +1,17 @@
 import cv2
 import numpy as np
 import time
+from drawModule import Controls
+
+class point():
+    def __init__(self, x,y):
+        self.x = x
+        self.y = y
+
 
 #Start cam stream
 cap = cv2.VideoCapture(0)
+
 points = []
 
 while(1):
@@ -30,7 +38,7 @@ while(1):
     blurframe = cv2.blur(frame, (50, 50))
 
     #Define color range in BGR
-    lower_BGR = np.array([238, 210, 210])
+    lower_BGR = np.array([230, 210, 210])
     upper_BGR = np.array([255, 255, 255])
 
     # Threshold the image to get only the selected colors
