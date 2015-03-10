@@ -3,10 +3,17 @@ import numpy as np
 import math 
 from matplotlib import pyplot as plt
 
-class Controls:
+
+
+class point():
+    def __init__(self, x,y):
+        self.x = x
+        self.y = y
+
+
+class Controls(object):
 	def __init__(self, size = (200,200)):
-		self.x = 0
-		self.y = 0
+		self.pointer = point(0,0)
 		self.rgb = [0,0,0]
 		self.circle_radius = 1
 		self.screen = np.zeros((size[0],size[1],3),np.uint8)
@@ -82,5 +89,3 @@ def test():
 	plt.subplot(122),plt.imshow(img1),plt.title('Other')
 	plt.xticks([]), plt.yticks([])
 	plt.show()
-
-test()

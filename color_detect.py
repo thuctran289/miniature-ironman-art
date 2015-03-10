@@ -1,8 +1,18 @@
 import cv2
 import numpy as np
+from drawModule import Controls
+
+class point():
+    def __init__(self, x,y):
+        self.x = x
+        self.y = y
+
 
 #Start cam stream
 cap = cv2.VideoCapture(0)
+print cap.get(3)
+print cap.get(4)
+main_controls = Controls((cap.get(3), cap.get(4)))
 
 while(1):
 
@@ -13,7 +23,7 @@ while(1):
     blurframe = cv2.blur(frame, (50, 50))
 
     #Define color range in BGR
-    lower_BGR = np.array([180, 180, 180])
+    lower_BGR = np.array([240, 210, 210])
     upper_BGR = np.array([255, 255, 255])
 
     # Threshold the image to get only the selected colors
@@ -31,6 +41,8 @@ while(1):
         M = cv2.moments(cnt)
         x,y,w,h = cv2.boundingRect(cnt)
         cv2.rectangle(frame, (x+w/2-5,y+h/2-5), (x+w/2+5, y+h/2+5), (0, 0, 255), 3)
+        pointA = point(x+w/2,y+h/2)
+
         print x+w/2, y+h/2
 
     #Display the final image
@@ -42,6 +54,3 @@ while(1):
 #Release the capture and close the windows
 cap.release()
 cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    publisher()
