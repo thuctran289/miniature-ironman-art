@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
 import time
+"""
+We are using global variables such as frame for this program. 
+"""
+
 
 class Point():
     def __init__(self, x,y,r):
@@ -16,15 +20,32 @@ class Light():
         self.h = h
 
 class CommandBox(object):
+    """
+    Defines a base class for different ways for light to interact with a screen. Defines a box where a command can be activated
+    """
     def __init__(self, x, y, w, h,box_bgr):
+        """
+        Initializes the box's position, size, and color. Will be overwritten in further base classes for more particular roles.
+        x,y is lowerleft corner. w,h are width and height, and box_bgr is the color of the box. 
+        """
         self.x = x
         self.y = y
         self.w = w
         self.h = h 
         self.box_bgr = box_bgr
+
     def display_box(self):
+        """
+        This displays to the global frame variable. Just draws the different displays barring other specific requirements. 
+        """
+        #Uses opencv to write a rectangle to. 
         cv2.rectangle(frame, (self.x, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
+
     def inframe(self, point):
+        """
+        Checks to see if a point is in the frame of the CommandBox.
+        """
+        #Checks to see if a point is in the range of the box. 
         if self.x-25<= point.x <= self.x+self.w-25:
             if self.y-25<=point.y<=self.y + self.h-25:
                 return True
@@ -47,7 +68,7 @@ class ColorBox(CommandBox):
 class ResetBox(CommandBox):
     def display_box(self):
         cv2.rectangle(frame, (self.x, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
-        cv2.putText(frame, "R",(self.x,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 1, 0)
+        cv2.putText(frame, "R",(self.x,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 2, 0)
     def check_reset(self,pointer, point_array):
         if self.inframe(pointer):
             return []
@@ -60,9 +81,9 @@ class RadiusBox(CommandBox):
         self.r = r
     def display_box(self):
         cv2.rectangle(frame, (self.x, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
-        cv2.putText(frame, "+",(self.x,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
+        cv2.putText(frame, "+",(self.x,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
         cv2.rectangle(frame, (self.x+self.w/2, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
-        cv2.putText(frame, "-",(self.x+self.w/2,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
+        cv2.putText(frame, "-",(self.x+self.w/2,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
     def inframe(self, point):
         if self.x-25<= point.x <= self.x+self.w/2-25:
             if self.y-25<=point.y<=self.y + self.h-25:
@@ -93,7 +114,6 @@ light = Light(0, 0, 0, 0)
 color_box = ColorBox(0, int(frameHeight-100), 100, 100, [0, 0, 255],[0,0,0])
 radius_box = RadiusBox(int(frameWidth-150),int(frameHeight-50),100,50,[0,255,0],5)
 reset_box = ResetBox(int(frameWidth-50),int(frameHeight-50),50,50,[255,0,0])
-
 #Define color range in BGR
 lower_BGR = np.array([210, 150, 150])
 upper_BGR = np.array([255, 255, 255])
