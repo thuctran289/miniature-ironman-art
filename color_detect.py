@@ -7,6 +7,7 @@ class Point():
         self.x = x
         self.y = y
         self.r = r
+
 class Light():
     def __init__(self, x, y, w, h):
         self.x = x
@@ -24,8 +25,8 @@ class CommandBox(object):
     def display_box(self):
         cv2.rectangle(frame, (self.x, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
     def inframe(self, point):
-        if self.x<= point.x <= self.x+self.w:
-            if self.y<=point.y<=self.y + self.h:
+        if self.x-25<= point.x <= self.x+self.w-25:
+            if self.y-25<=point.y<=self.y + self.h-25:
                 return True
         else:
             return False
@@ -34,17 +35,14 @@ class ColorBox(CommandBox):
     def __init__(self, x, y, w, h, box_bgr, draw_bgr):
         self.draw_bgr = draw_bgr
         super(ColorBox, self).__init__(x,y,w,h,box_bgr)
-
     def set_draw_color(self, color_segment):
         b,g,r = cv2.split(color_segment)
         self.draw_bgr[0] = np.average(b)
         self.draw_bgr[1] = np.average(g)
         self.draw_bgr[2] = np.average(r)
-
-    def display_box(self):
+    def display_box(self, r):
         cv2.rectangle(frame, (self.x, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
-        cv2.circle(frame, (100, 100), 50, color_box.draw_bgr, -1)
-
+        cv2.circle(frame, (100, 100), r, color_box.draw_bgr, -1)
 
 class ResetBox(CommandBox):
     def display_box(self):
@@ -66,15 +64,14 @@ class RadiusBox(CommandBox):
         cv2.rectangle(frame, (self.x+self.w/2, self.y), (self.x+self.w, self.y+self.h), self.box_bgr, 1)
         cv2.putText(frame, "-",(self.x+self.w/2,self.y+self.h), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
     def inframe(self, point):
-        if self.x<= point.x <= self.x+self.w/2:
-            if self.y<=point.y<=self.y + self.h:
+        if self.x-25<= point.x <= self.x+self.w/2-25:
+            if self.y-25<=point.y<=self.y + self.h-25:
                 return 1
-        elif self.x+self.w/2<= point.x <= self.x+self.w:
-            if self.y<=point.y<=self.y + self.h:
+        elif self.x+self.w/2-25<= point.x <= self.x+self.w-25:
+            if self.y-25<=point.y<=self.y + self.h-25:
                 return -1
         else:
             return 0
-
     def change_radius(self, pointer):
         if self.inframe(pointer)== 0:
             pass
@@ -85,21 +82,25 @@ class RadiusBox(CommandBox):
         if self.r<=1:
             self.r = 1
 
-
-pointer = Point(0, 0,5)
-light = Light(0, 0, 0, 0)
-color_box = ColorBox(0, 430, 100, 100, [0, 0, 255],[0,0,0])
-radius_box = RadiusBox(490,430,100,50,[0,255,0],5)
-reset_box = ResetBox(590,430,50,50,[255,0,0])
 #Start cam stream
 cap = cv2.VideoCapture(0)
+
+frameWidth = cap.get(3)
+frameHeight = cap.get(4)
+
+pointer = Point(0, 0, 5)
+light = Light(0, 0, 0, 0)
+color_box = ColorBox(0, 430, 100, 100, [0, 0, 255],[0,0,0])
+radius_box = RadiusBox(int(frameWidth-150),int(frameHeight-50),100,50,[0,255,0],5)
+reset_box = ResetBox(int(frameWidth-50),int(frameHeight-50),50,50,[255,0,0])
+
 #Define color range in BGR
 lower_BGR = np.array([210, 150, 150])
 upper_BGR = np.array([255, 255, 255])
 
-
 points = []
 
+counter = 0
 
 while(1):
     #Set 'frame' as the current cam capture
@@ -110,11 +111,8 @@ while(1):
     color_segment = frame[color_box.y : color_box.y+color_box.h, color_box.x : color_box.x+color_box.w]
     color_box.set_draw_color(color_segment)
     #Display the ColorBox Conditions.
+
     #Blur the frame
-
-
-    
-    #Associated with point detection.
     blurframe = cv2.blur(frame, (50, 50))
     # Threshold the image to get only the selected colors
     mask = cv2.inRange(blurframe, lower_BGR, upper_BGR)
@@ -123,7 +121,6 @@ while(1):
     #Create a contour around the selected colors
     contours,_ = cv2.findContours(contour_mask, 1, 2)
     #If there is a contour, add the position and current drawing color to a list
-
 
     if len(contours) > 0:
         cnt = contours[0]
@@ -139,16 +136,17 @@ while(1):
         points.append([[pointer.x+light.w/2, pointer.y+light.h/2, pointer.r], new_color])
     #If there is anything to be drawn, draw it!
 
-    radius_box.change_radius(pointer)
+    counter += 1
+    if counter % 5 == 0:
+        radius_box.change_radius(pointer)
     points = reset_box.check_reset(pointer, points)
 
     if len(points) > 0:
         for i in xrange(len(points)):
             cv2.circle(frame, (points[i][0][0], points[i][0][1]), points[i][0][2], (points[i][1][0], points[i][1][1], points[i][1][2]), -1)
-    color_box.display_box()
+    color_box.display_box(radius_box.r)
     radius_box.display_box()
     reset_box.display_box()
-
 
     #Display the final image
     cv2.imshow('frame', frame)
