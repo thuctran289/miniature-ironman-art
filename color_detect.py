@@ -90,7 +90,7 @@ frameHeight = cap.get(4)
 
 pointer = Point(0, 0, 5)
 light = Light(0, 0, 0, 0)
-color_box = ColorBox(0, 430, 100, 100, [0, 0, 255],[0,0,0])
+color_box = ColorBox(0, int(frameHeight-100), 100, 100, [0, 0, 255],[0,0,0])
 radius_box = RadiusBox(int(frameWidth-150),int(frameHeight-50),100,50,[0,255,0],5)
 reset_box = ResetBox(int(frameWidth-50),int(frameHeight-50),50,50,[255,0,0])
 
