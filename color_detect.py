@@ -7,6 +7,9 @@ We are using global variables such as frame for this program.
 
 #Represents the drawing point
 class Point():
+    """
+    Defines a class for the characteristics of the drawing pen
+    """
     def __init__(self, x,y,r):
         self.x = x
         self.y = y
@@ -14,6 +17,9 @@ class Point():
 
 #Represents the bright sources of light
 class Light():
+    """
+    Defines a class for the parts of the 'frame' image that make it through the color filter
+    """
     def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
@@ -23,7 +29,7 @@ class Light():
 #Represents the interactive buttons
 class CommandBox(object):
     """
-    Defines a base class for different ways for light to interact with a screen. Defines a box where a command can be activated
+    Defines a base class for different ways for light to interact with a screen. Defines a box where a command can be activated.
     """
     def __init__(self, x, y, w, h,box_bgr):
         """
