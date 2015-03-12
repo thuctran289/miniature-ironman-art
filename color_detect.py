@@ -162,99 +162,101 @@ class RadiusBox(CommandBox):
         if self.r<=1:
             self.r = 1
 
-#Start cam stream
-cap = cv2.VideoCapture(0)
 
-#Define camera characteristics
-frameWidth = cap.get(3)
-frameHeight = cap.get(4)
+if __name__ == '__main__':
+    #Start cam stream
+    cap = cv2.VideoCapture(0)
 
-#Create the pen
-pointer = Point(0, 0, 5)
-light = Light(0, 0, 0, 0)
+    #Define camera characteristics
+    frameWidth = cap.get(3)
+    frameHeight = cap.get(4)
 
-#Create the buttons
-color_box = ColorBox(0, int(frameHeight-100), 100, 100, [0, 0, 255],[0,0,0])
-radius_box = RadiusBox(int(frameWidth-150),int(frameHeight-50),100,50,[0,255,0],5)
-reset_box = ResetBox(int(frameWidth-50),int(frameHeight-50),50,50,[255,0,0])
+    #Create the pen
+    pointer = Point(0, 0, 5)
+    light = Light(0, 0, 0, 0)
 
-#Define color to select for in BGR
-lower_BGR = np.array([210, 150, 150])
-upper_BGR = np.array([255, 255, 255])
+    #Create the buttons
+    color_box = ColorBox(0, int(frameHeight-100), 100, 100, [0, 0, 255],[0,0,0])
+    radius_box = RadiusBox(int(frameWidth-150),int(frameHeight-50),100,50,[0,255,0],5)
+    reset_box = ResetBox(int(frameWidth-50),int(frameHeight-50),50,50,[255,0,0])
 
-#Instantiate the list of drawings
-points = []
+    #Define color to select for in BGR
+    lower_BGR = np.array([210, 150, 150])
+    upper_BGR = np.array([255, 255, 255])
 
-#Instantiate the while loop counter
-counter = 0
+    #Instantiate the list of drawings
+    points = []
 
-while(1):
-    #Set 'frame' as the current cam capture
-    _, frame = cap.read()
+    #Instantiate the while loop counter
+    counter = 0
 
-    #Flip the frame over the vertical axis (so that it looks like looking into a mirror)
-    frame = cv2.flip(frame, 1)
+    while(1):
+        #Set 'frame' as the current cam capture
+        _, frame = cap.read()
 
-    #Find the average color of the ColorBox by getting frame of the color, and inputting into function. 
-    color_segment = frame[color_box.y : color_box.y+color_box.h, color_box.x : color_box.x+color_box.w]
-    color_box.set_draw_color(color_segment)
+        #Flip the frame over the vertical axis (so that it looks like looking into a mirror)
+        frame = cv2.flip(frame, 1)
 
-    #Guarantees a clean point each iteration on the loop
-    pointer.x = 0
-    pointer.y = 0
-    pointer.r = 0
+        #Find the average color of the ColorBox by getting frame of the color, and inputting into function. 
+        color_segment = frame[color_box.y : color_box.y+color_box.h, color_box.x : color_box.x+color_box.w]
+        color_box.set_draw_color(color_segment)
 
-    #Blur the frame to blend colors
-    blurframe = cv2.blur(frame, (50, 50))
+        #Guarantees a clean point each iteration on the loop
+        pointer.x = 0
+        pointer.y = 0
+        pointer.r = 0
 
-    # Threshold the image to get only the selected colors
-    mask = cv2.inRange(blurframe, lower_BGR, upper_BGR)
-    contour_mask = mask
-    cv2.imshow('mask', mask)
+        #Blur the frame to blend colors
+        blurframe = cv2.blur(frame, (50, 50))
 
-    #Create a contour around the selected colors
-    contours,_ = cv2.findContours(contour_mask, 1, 2)
+        # Threshold the image to get only the selected colors
+        mask = cv2.inRange(blurframe, lower_BGR, upper_BGR)
+        contour_mask = mask
+        cv2.imshow('mask', mask)
 
-    #If there is a contour, add the position and current drawing color to a list
-    if len(contours) > 0:
-        cnt = contours[0]
-        M = cv2.moments(cnt)
+        #Create a contour around the selected colors
+        contours,_ = cv2.findContours(contour_mask, 1, 2)
 
-        #Define the color-tracked light source
-        light.x, light.y, light.w, light.h = cv2.boundingRect(cnt)
+        #If there is a contour, add the position and current drawing color to a list
+        if len(contours) > 0:
+            cnt = contours[0]
+            M = cv2.moments(cnt)
 
-        #Assign the position of the pointer
-        pointer.x = light.x
-        pointer.y = light.y
-        pointer.r = radius_box.r
+            #Define the color-tracked light source
+            light.x, light.y, light.w, light.h = cv2.boundingRect(cnt)
 
-        #Add the pointer and color characteristics to a reference list
-        new_color = [color_box.draw_bgr[0],color_box.draw_bgr[1],color_box.draw_bgr[2]]
-        points.append([[pointer.x+light.w/2, pointer.y+light.h/2, pointer.r], new_color])
+            #Assign the position of the pointer
+            pointer.x = light.x
+            pointer.y = light.y
+            pointer.r = radius_box.r
 
-    #Slows down the speed at which the radius change button activates
-    counter += 1
-    if counter % 5 == 0:
-        radius_box.change_radius(pointer)
-    points = reset_box.check_reset(pointer, points)
+            #Add the pointer and color characteristics to a reference list
+            new_color = [color_box.draw_bgr[0],color_box.draw_bgr[1],color_box.draw_bgr[2]]
+            points.append([[pointer.x+light.w/2, pointer.y+light.h/2, pointer.r], new_color])
 
-    #If there is anything to be drawn, draw it!
-    if len(points) > 0:
-        for i in xrange(len(points)):
-            cv2.circle(frame, (points[i][0][0], points[i][0][1]), points[i][0][2], (points[i][1][0], points[i][1][1], points[i][1][2]), -1)
-    
-    #Display the buttons
-    color_box.display_box(radius_box.r)
-    radius_box.display_box()
-    reset_box.display_box()
+        #Slows down the speed at which the radius change button activates
+        counter += 1
+        if counter % 5 == 0:
+            radius_box.change_radius(pointer)
+        points = reset_box.check_reset(pointer, points)
 
-    #Display the final image
-    cv2.imshow('frame', frame)
+        #If there is anything to be drawn, draw it!
+        if len(points) > 0:
+            for i in xrange(len(points)):
+                cv2.circle(frame, (points[i][0][0], points[i][0][1]), points[i][0][2], (points[i][1][0], points[i][1][1], points[i][1][2]), -1)
+        
+        #Display the buttons
+        color_box.display_box(radius_box.r)
+        radius_box.display_box()
+        reset_box.display_box()
 
-    #If ESC pressed, quit the program
-    if cv2.waitKey(1) & 0xFF == 27:
-        break
+        #Display the final image
+        cv2.imshow('frame', frame)
 
-#Release the capture and close the windows
-cap.release()
-cv2.destroyAllWindows()
+        #If ESC pressed, quit the program
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+
+    #Release the capture and close the windows
+    cap.release()
+    cv2.destroyAllWindows()
