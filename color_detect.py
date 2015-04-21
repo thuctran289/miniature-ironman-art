@@ -13,7 +13,7 @@ class Point():
     def __init__(self, x,y,r):
         self.x = x
         self.y = y
-        self.r = r
+        self.r = r #What is r? r for radius, but this isn't clear just by reading this part of the code
 
 #Represents the bright sources of light
 class Light():
@@ -34,7 +34,8 @@ class CommandBox(object):
     def __init__(self, x, y, w, h,box_bgr):
         """
         Initializes the box's position, size, and color. Will be overwritten in further base classes for more particular roles.
-        x,y is lowerleft corner. w,h are width and height, and box_bgr is the color of the box. 
+        x,y is lowerleft corner. w,h are width and height, and box_bgr is the color of the box.
+        ^Good docstring
         """
         self.x = x
         self.y = y
@@ -53,7 +54,7 @@ class CommandBox(object):
         """
         Checks to see if a point is in the frame of the CommandBox.
         """
-        #Checks to see if a point is in the range of the box. 
+        #Checks to see if a point is in the range of the box. <--This is a repeat of the docstring. Use one or the other
         if self.x-25<= point.x <= self.x+self.w-25:
             if self.y-25<=point.y<=self.y + self.h-25:
                 return True
