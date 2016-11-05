@@ -2,8 +2,8 @@
 LEDraw was created by Thuc Tran and Shane Kelly, but you are free to borrow the code and make other awesome things as long as you show us the cool product!
 
 Steps to use:
-1. Install OpenCV at opencv.org
-2. Compile the code in a Python compiler
+1. Install OpenCV at opencv.org.
+2. Run our code in a Python interpreter.
 3. Grab an LED and start drawing!
 	TIP: You can change the color masking of the object that you want to draw with (if you don't want to use a white LED like we did). You can change it by changing the 'lower_BGR' and 'upper_BGR' variables.
 4. As you move your 'pen' around, you will leave a drawing trail.
